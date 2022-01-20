@@ -163,7 +163,7 @@ public class BankAppn {
 		}
 		
 		if(input==8) {
-			System.out.println("Exiting....");
+			System.err.println("Exiting....");
 			break;
 		}
 	}
