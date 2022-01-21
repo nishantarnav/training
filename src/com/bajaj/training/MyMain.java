@@ -17,7 +17,7 @@ public class MyMain {
 	
 	public static void sum(int a,int b)
 	{
-		int c=a+b;
+		int c=b+b;
 		System.out.println("c =="+c);
 	}
 
