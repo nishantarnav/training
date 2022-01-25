@@ -1,0 +1,78 @@
+create table student(
+	student_id int not null primary key,
+	student_name varchar(50));
+create table registered(
+    student_id int,
+    course_id int,
+    constraint fk_student foreign key(student_id) references student(student_id));
+insert into student (student_id, student_name) values (1, 'Reginald');
+insert into student (student_id, student_name) values (2, 'Dalis');
+insert into student (student_id, student_name) values (3, 'Kim');
+insert into student (student_id, student_name) values (4, 'Fidelio');
+insert into student (student_id, student_name) values (5, 'Vickie');
+insert into student (student_id, student_name) values (6, 'Nial');
+insert into student (student_id, student_name) values (7, 'Goldarina');
+insert into student (student_id, student_name) values (8, 'Genevra');
+insert into student (student_id, student_name) values (9, 'Sonia');
+insert into student (student_id, student_name) values (10, 'Kath');
+insert into student (student_id, student_name) values (11, 'Cahra');
+insert into student (student_id, student_name) values (12, 'Westley');
+insert into student (student_id, student_name) values (13, 'Hewett');
+insert into student (student_id, student_name) values (14, 'Reinaldos');
+insert into student (student_id, student_name) values (15, 'Wrennie');
+insert into student (student_id, student_name) values (16, 'Alethea');
+insert into student (student_id, student_name) values (17, 'Chevy');
+insert into student (student_id, student_name) values (18, 'Jefferey');
+insert into student (student_id, student_name) values (19, 'Wainwright');
+insert into student (student_id, student_name) values (20, 'Antony');
+insert into student (student_id, student_name) values (21, 'Johnnie');
+insert into student (student_id, student_name) values (22, 'Maudie');
+insert into student (student_id, student_name) values (23, 'Elisabetta');
+insert into student (student_id, student_name) values (24, 'Correna');
+insert into student (student_id, student_name) values (25, 'Analise');
+insert into student (student_id, student_name) values (26, 'Miguela');
+insert into student (student_id, student_name) values (27, 'Odelle');
+insert into student (student_id, student_name) values (28, 'Hagen');
+insert into student (student_id, student_name) values (29, 'Corina');
+insert into student (student_id, student_name) values (30, 'Marius');
+insert into student (student_id, student_name) values (31, 'Felita');
+insert into student (student_id, student_name) values (32, 'Burton');
+insert into student (student_id, student_name) values (33, 'Illa');
+insert into student (student_id, student_name) values (34, 'Kathrine');
+insert into student (student_id, student_name) values (35, 'Marsha');
+insert into student (student_id, student_name) values (36, 'Briano');
+
+insert into registered (student_id, course_id) values (14, 61);
+insert into registered (student_id, course_id) values (8, 9);
+insert into registered (student_id, course_id) values (12, 10);
+insert into registered (student_id, course_id) values (28, 34);
+insert into registered (student_id, course_id) values (13, 6);
+insert into registered (student_id, course_id) values (21, 40);
+insert into registered (student_id, course_id) values (28, 76);
+insert into registered (student_id, course_id) values (25, 88);
+insert into registered (student_id, course_id) values (23, 19);
+insert into registered (student_id, course_id) values (6, 10);
+insert into registered (student_id, course_id) values (12, 94);
+insert into registered (student_id, course_id) values (13, 77);
+insert into registered (student_id, course_id) values (26, 65);
+insert into registered (student_id, course_id) values (30, 41);
+insert into registered (student_id, course_id) values (10, 9);
+insert into registered (student_id, course_id) values (12, 67);
+insert into registered (student_id, course_id) values (32, 18);
+insert into registered (student_id, course_id) values (12, 25);
+insert into registered (student_id, course_id) values (14, 10);
+insert into registered (student_id, course_id) values (20, 86);
+insert into registered (student_id, course_id) values (13, 40);
+insert into registered (student_id, course_id) values (9, 59);
+insert into registered (student_id, course_id) values (15, 6);
+select * from student;
+select * from registered;
+--students who registered in a course in 3 types of queries
+select * from student,registered where student.student_id=registered.student_id;
+select s.student_id,s.student_name,r.course_id from student s,registered r where s.student_id=r.student_id;
+select * from student inner join registered on student.student_id=registered.student_id;
+--students with count of courses registered
+select s.student_id,s.student_name,count(*) from student s,registered r where s.student_id=r.student_id
+group by r.student_id,s.student_id;
+select s.student_id,s.student_name,count(course_id) from student s left join registered r on
+s.student_id=r.student_id group by s.student_id,r.student_id;

@@ -1,0 +1,112 @@
+create table emp (
+	emp_id INT not null primary key,
+	emp_name VARCHAR(50),
+	emp_age INT
+);
+insert into emp (emp_id, emp_name, emp_age) values (1, 'Harrietta', 20);
+insert into emp (emp_id, emp_name, emp_age) values (2, 'Mahmoud', 31);
+insert into emp (emp_id, emp_name, emp_age) values (3, 'Kati', 26);
+insert into emp (emp_id, emp_name, emp_age) values (4, 'Holly-anne', 41);
+insert into emp (emp_id, emp_name, emp_age) values (5, 'Ninnetta', 28);
+insert into emp (emp_id, emp_name, emp_age) values (6, 'Emmaline', 24);
+insert into emp (emp_id, emp_name, emp_age) values (7, 'Faustine', 47);
+insert into emp (emp_id, emp_name, emp_age) values (8, 'Rycca', 28);
+insert into emp (emp_id, emp_name, emp_age) values (9, 'Chryste', 31);
+insert into emp (emp_id, emp_name, emp_age) values (10, 'Chan', 34);
+insert into emp (emp_id, emp_name, emp_age) values (11, 'Jacquetta', 23);
+insert into emp (emp_id, emp_name, emp_age) values (12, 'Jodi', 27);
+insert into emp (emp_id, emp_name, emp_age) values (13, 'Alvan', 33);
+insert into emp (emp_id, emp_name, emp_age) values (14, 'Craig', 31);
+insert into emp (emp_id, emp_name, emp_age) values (15, 'Robinet', 43);
+select * from emp;
+
+create table department (
+	dept_id INT,
+	dept_name VARCHAR(50)
+);
+insert into department (dept_id, dept_name) values (1, 'Fiveclub');
+insert into department (dept_id, dept_name) values (2, 'Zooveo');
+insert into department (dept_id, dept_name) values (3, 'Tazzy');
+insert into department (dept_id, dept_name) values (4, 'Einti');
+insert into department (dept_id, dept_name) values (5, 'Skaboo');
+insert into department (dept_id, dept_name) values (6, 'Skivee');
+insert into department (dept_id, dept_name) values (7, 'Zoombox');
+insert into department (dept_id, dept_name) values (8, 'Oba');
+insert into department (dept_id, dept_name) values (9, 'Twitternation');
+insert into department (dept_id, dept_name) values (10, 'Blogspan');
+select * from department;
+alter table department add primary key(dept_id);
+
+create table emp_dept (
+	emp_id INT primary key,
+	dept_id INT,
+	foreign key(dept_id) references department(dept_id)
+);
+insert into emp_dept (emp_id, dept_id) values (1, 4);
+insert into emp_dept (emp_id, dept_id) values (2, 2);
+insert into emp_dept (emp_id, dept_id) values (3, 1);
+insert into emp_dept (emp_id, dept_id) values (4, 4);
+insert into emp_dept (emp_id, dept_id) values (6, 1);
+insert into emp_dept (emp_id, dept_id) values (7, 10);
+insert into emp_dept (emp_id, dept_id) values (9, 10);
+insert into emp_dept (emp_id, dept_id) values (10, 8);
+insert into emp_dept (emp_id, dept_id) values (12, 8);
+insert into emp_dept (emp_id, dept_id) values (13, 2);
+insert into emp_dept (emp_id, dept_id) values (14, 4);
+insert into emp_dept (emp_id, dept_id) values (15, 3);
+select * from emp_dept;
+
+create table salary (
+	salary_scale INT primary key,
+	salary_amt INT
+);
+insert into salary (salary_scale, salary_amt) values (1, 10000);
+insert into salary (salary_scale, salary_amt) values (2, 25000);
+insert into salary (salary_scale, salary_amt) values (3, 50000);
+insert into salary (salary_scale, salary_amt) values (4, 100000);
+select * from salary;
+
+create table emp_salary (
+	emp_id INT primary key,
+	salary_scale INT,
+	foreign key(salary_scale) references salary(salary_scale),
+	foreign key(emp_id) references emp_dept(emp_id)
+);
+insert into emp_salary (emp_id, salary_scale) values (1, 1);
+insert into emp_salary (emp_id, salary_scale) values (2, 4);
+insert into emp_salary (emp_id, salary_scale) values (3, 1);
+insert into emp_salary (emp_id, salary_scale) values (4, 2);
+insert into emp_salary (emp_id, salary_scale) values (6, 4);
+insert into emp_salary (emp_id, salary_scale) values (7, 4);
+insert into emp_salary (emp_id, salary_scale) values (9, 2);
+insert into emp_salary (emp_id, salary_scale) values (10, 3);
+insert into emp_salary (emp_id, salary_scale) values (12, 1);
+insert into emp_salary (emp_id, salary_scale) values (13, 3);
+insert into emp_salary (emp_id, salary_scale) values (14, 3);
+insert into emp_salary (emp_id, salary_scale) values (15, 1);
+select * from emp_salary;
+
+--emp names who has paid in salary scale 1
+select emp_id,emp_name from emp where emp_id in(select emp_id from emp_salary where salary_scale=1);
+select emp_id,emp_name from emp where exists(select emp_id from emp_salary where salary_scale=1 and 
+											emp.emp_id=emp_salary.emp_id);
+--increase age by 10 if age not equal to avg age
+update emp set emp_age=emp_age+10 where emp_age<>(select round(avg(emp_age)) from emp);
+select * from emp;
+select round(avg(emp_age)) from emp;
+--avg salary of employees
+select round(avg(salary_amt)) from salary,emp_salary where emp_salary.salary_scale=salary.salary_scale;
+--avg salary of emp for each dept
+select emp_dept.dept_id,round(avg(salary_amt)) as avg_sal from emp_dept inner join emp_salary using (emp_id) 
+inner join salary on emp_salary.salary_scale=salary.salary_scale group by emp_dept.dept_id;
+--gives departments and their avg salaries whose avg sal >30000
+select emp_dept.dept_id,round(avg(salary))
+from emp_dept inner join emp_salary using (emp_id) inner join
+salary on emp_salary.salary_scale=salary.salary_scale group by emp_dept.dept_id 
+having round(avg(salary_amt))>30000;
+--dept names whose avg sal greater than 30000
+select dept_name from department where dept_id in (select emp_dept.dept_id
+from emp_dept inner join emp_salary using (emp_id) inner join
+salary on emp_salary.salary_scale=salary.salary_scale group by emp_dept.dept_id 
+having round(avg(salary_amt))>30000);
+
